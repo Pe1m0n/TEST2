@@ -77,7 +77,7 @@ namespace TEST2
 
 
         #endregion
-        private byte[] byData = new byte[65535]; //Data carried by the UDP/TCP
+
 
         public IPHeader(byte[] byBuffer, int nReceived)
         {

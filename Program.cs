@@ -18,6 +18,8 @@ namespace TEST2
         static private Queue HeadersQEUE = new Queue();
         static private Socket mainSocket;
 
+        static private byte[] byteData = new byte[65535];
+
         static int Main(string[] args)
         {
 
@@ -51,7 +53,6 @@ namespace TEST2
                 return 0;
             }
 
-            byte[] byteData = new byte[65535];
 
            mainSocket.BeginReceive(byteData, 0, byteData.Length, SocketFlags.None, new AsyncCallback(Receive), null);
 
@@ -80,23 +81,25 @@ namespace TEST2
 
         static void Receive(IAsyncResult ar)
         {
-            byte[] byteData = new byte[65535];
 
-            _ = ListenHeadersAcync(byteData, mainSocket.EndReceive(ar));
 
-            ar = mainSocket.BeginReceive(byteData, 0, byteData.Length, SocketFlags.None, new AsyncCallback(Receive), null);
+            _ = ListenHeadersAsync(mainSocket.EndReceive(ar), byteData);
+
+  
+            byteData = new byte[65535];
+           
+            mainSocket.BeginReceive(byteData, 0, byteData.Length, SocketFlags.None, new AsyncCallback(Receive), null);
 
         }
 
-        static async Task ListenHeadersAcync(byte[] byteData, int nReceived)
+        static async Task ListenHeadersAsync(int nReceived, byte[] byteData)
         {
+        
+            await Task.Run(() => ListenHeaders(nReceived, byteData));
 
-            await Task.Run(() => ListenHeaders(byteData, nReceived));
-
- 
         }
 
-        static void ListenHeaders(byte[] byteData, int nReceived)
+        static void ListenHeaders(int nReceived, byte[] byteData)
         {
             var ipheader = new IPHeader(byteData, nReceived);
 
@@ -205,7 +208,7 @@ namespace TEST2
         
         private static string ProtocoleType(byte Protocol) 
         {
-            var p = "";
+            string p;
 
             if (Protocol == 6)
             {
