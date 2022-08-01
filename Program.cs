@@ -84,10 +84,7 @@ namespace TEST2
 
             _ = ListenHeadersAcync(byteData, mainSocket.EndReceive(ar));
 
-            byteData = new byte[65535];
-
             ar = mainSocket.BeginReceive(byteData, 0, byteData.Length, SocketFlags.None, new AsyncCallback(Receive), null);
-
 
         }
 
