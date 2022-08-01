@@ -15,8 +15,11 @@ namespace TEST2
     class Program
     {
         static private object locker = new object();
+
         static private Queue HeadersQEUE = new Queue();
         static private Socket mainSocket;
+
+        static private bool isReaded = false;
 
         static private byte[] byteData = new byte[65535];
 
@@ -85,23 +88,35 @@ namespace TEST2
 
             _ = ListenHeadersAsync(mainSocket.EndReceive(ar), byteData);
 
-  
+
+            while (isReaded == false)
+            {
+            }
+
             byteData = new byte[65535];
-           
+
+            isReaded = false;
+
             mainSocket.BeginReceive(byteData, 0, byteData.Length, SocketFlags.None, new AsyncCallback(Receive), null);
+
 
         }
 
         static async Task ListenHeadersAsync(int nReceived, byte[] byteData)
         {
-        
+           
             await Task.Run(() => ListenHeaders(nReceived, byteData));
 
         }
 
         static void ListenHeaders(int nReceived, byte[] byteData)
         {
-            var ipheader = new IPHeader(byteData, nReceived);
+
+            byte[] byteBuffer = (byte[])byteData.Clone();
+
+            isReaded = true;
+
+            var ipheader = new IPHeader(byteBuffer, nReceived);
 
 
             if (ipheader.byHeaderLength > 0)
