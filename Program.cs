@@ -55,7 +55,7 @@ namespace TEST2
 
            mainSocket.BeginReceive(byteData, 0, byteData.Length, SocketFlags.None, new AsyncCallback(Receive), null);
 
-           int FileWriteBuffer = 100;// Output every "n" = FileWriteBuffer headers to make it faster 
+           int FileWriteBuffer = 10;// Output every "n" = FileWriteBuffer headers to make it faster 
                                           //attention: increasing this parameter affects the amount of RAM required
 
            while (true)
@@ -82,9 +82,11 @@ namespace TEST2
         {
             var byteData = new byte[65535];
 
-            ListenHeadersAcync(byteData, mainSocket.EndReceive(ar));
+            _ = ListenHeadersAcync(byteData, mainSocket.EndReceive(ar));
 
-            mainSocket.BeginReceive(byteData, 0, byteData.Length, SocketFlags.None, new AsyncCallback(Receive), null);
+            ar = mainSocket.BeginReceive(byteData, 0, byteData.Length, SocketFlags.None, new AsyncCallback(Receive), null);
+
+
         }
 
         static async Task ListenHeadersAcync(byte[] byteData, int nReceived)
