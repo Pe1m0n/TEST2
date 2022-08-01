@@ -51,9 +51,9 @@ namespace TEST2
                 return 0;
             }
 
-           ByteArray b = new ByteArray(65535);
+            byte[] b = new byte[65535];
 
-           mainSocket.BeginReceive(b.array, 0, b.array.Length, SocketFlags.None, new AsyncCallback(Receive), null);
+           mainSocket.BeginReceive(b, 0, b.Length, SocketFlags.None, new AsyncCallback(Receive), null);
 
            int FileWriteBuffer = 10;// Output every "n" = FileWriteBuffer headers to make it faster 
                                           //attention: increasing this parameter affects the amount of RAM required
@@ -80,13 +80,13 @@ namespace TEST2
 
         static void Receive(IAsyncResult ar)
         {
-            ByteArray b = new ByteArray(65535);
+            byte[] b = new byte[65535];
 
-            _ = ListenHeadersAcync(b.array, mainSocket.EndReceive(ar));
+            _ = ListenHeadersAcync(b, mainSocket.EndReceive(ar));
 
-            b = new ByteArray(65535);
+            b = new byte[65535];
 
-            ar = mainSocket.BeginReceive(b.array, 0, b.array.Length, SocketFlags.None, new AsyncCallback(Receive), null);
+            ar = mainSocket.BeginReceive(b, 0, b.Length, SocketFlags.None, new AsyncCallback(Receive), null);
 
 
         }
@@ -225,17 +225,5 @@ namespace TEST2
 
             return p;
         }
-    }
-
-
-    class ByteArray
-    {
-        public byte[] array { get; set; }
-        public ByteArray(int size)
-        {
-            array = new byte[size];
-        }
-
-
     }
 }
