@@ -51,9 +51,9 @@ namespace TEST2
                 return 0;
             }
 
-            byte[] b = new byte[65535];
+            byte[] byteData = new byte[65535];
 
-           mainSocket.BeginReceive(b, 0, b.Length, SocketFlags.None, new AsyncCallback(Receive), null);
+           mainSocket.BeginReceive(byteData, 0, byteData.Length, SocketFlags.None, new AsyncCallback(Receive), null);
 
            int FileWriteBuffer = 10;// Output every "n" = FileWriteBuffer headers to make it faster 
                                           //attention: increasing this parameter affects the amount of RAM required
@@ -80,13 +80,13 @@ namespace TEST2
 
         static void Receive(IAsyncResult ar)
         {
-            byte[] b = new byte[65535];
+            byte[] byteData = new byte[65535];
 
-            _ = ListenHeadersAcync(b, mainSocket.EndReceive(ar));
+            _ = ListenHeadersAcync(byteData, mainSocket.EndReceive(ar));
 
-            b = new byte[65535];
+            byteData = new byte[65535];
 
-            ar = mainSocket.BeginReceive(b, 0, b.Length, SocketFlags.None, new AsyncCallback(Receive), null);
+            ar = mainSocket.BeginReceive(byteData, 0, byteData.Length, SocketFlags.None, new AsyncCallback(Receive), null);
 
 
         }
